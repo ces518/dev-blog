@@ -1,6 +1,8 @@
 package me.june.devblog.accounts;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -23,4 +25,10 @@ public class Account {
     private String password;
     private String username;
     private String email;
+
+    public void update(AccountDto.Update updateDto) {
+        this.password = updateDto.getPassword();
+        this.username = updateDto.getUsername();
+        this.email = updateDto.getEmail();
+    }
 }

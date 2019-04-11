@@ -39,13 +39,19 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity createAccount(@RequestBody AccountDto.Create dto) {
-        Account account = accounts.createAccount(dto);
+        Account account = this.accounts.createAccount(dto);
         AccountDto.Response response = objectMapper.convertValue(account, AccountDto.Response.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @ExceptionHandler(IllegalRequestException.class)
-    public ErrorResponse illegalRequestException(IllegalRequestException e) {
+    @PutMapping
+    public ResponseEntity updateAccout(@RequestBody AccountDto.Update dto) {
+        accounts.updateAccount(dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(DuplicateUserException.class)
+    public ErrorResponse duplicateUserException(DuplicateUserException e) {
         return ErrorResponse.of(ErrorCode.BAD_REQUEST,e.getMessage());
     }
 }
