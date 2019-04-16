@@ -55,7 +55,7 @@ public class AccountService {
     }
 
     public void deleteAccount(Account account) {
-        Assert.notNull(account.getUserId(),"userid should be not null");
+        Assert.notNull(account.getId(),"userid should be not null");
         Account findedAccount = findAccount(account);
         accounts.delete(findedAccount);
     }

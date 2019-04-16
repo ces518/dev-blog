@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,6 +56,7 @@ public class AccountControllerTest {
 
     private Account createAccount() {
         Account account = new Account();
+        account.setId(1L);
         account.setUserId("ces518");
         account.setPassword("pjy3859");
         account.setUsername("jyPark");
@@ -96,5 +98,30 @@ public class AccountControllerTest {
         result.andExpect(jsonPath("$.email").value("ces518@mayeye.net"));
     }
 
+    @Test
+    public void delete() throws Exception {
+        //given
+        Account account = createAccount();
+        given(accountService.createAccount(any(AccountDto.Create.class))).willReturn(account);
+
+        //when
+        ResultActions result = this.mockMvc.perform(post("/accounts").contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(account)));
+
+        //then
+        result.andDo(print());
+        result.andExpect(status().isCreated());
+        result.andExpect(jsonPath("$.userId").value("ces518"));
+        result.andExpect(jsonPath("$.username").value("jyPark"));
+        result.andExpect(jsonPath("$.email").value("ces518@mayeye.net"));
+
+        //when
+        result = this.mockMvc.perform(MockMvcRequestBuilders.delete("/accounts/" + account.getId())
+                .contentType(MediaType.APPLICATION_JSON_UTF8));
+
+        //then
+        result.andDo(print());
+        result.andExpect(status().isNoContent());
+    }
 
 }

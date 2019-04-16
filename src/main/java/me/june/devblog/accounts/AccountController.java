@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,10 +45,24 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping
+    @PutMapping("{id}")
     public ResponseEntity updateAccout(@RequestBody AccountDto.Update dto) {
         accounts.updateAccount(dto);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity deleteAccount(@PathVariable Long id, Account account) {
+        account.setId(id);
+        accounts.deleteAccount(account);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("login")
+    public ResponseEntity login(@RequestBody Account account, HttpSession session) {
+        Account findedAccount = accounts.findAccount(account);
+        session.setAttribute("SESSIONED_ACCOUNT",findedAccount);
+        return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler(DuplicateUserException.class)
