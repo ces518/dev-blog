@@ -1,23 +1,20 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <Header/>
+    <div class="wrapper">
+        <Nav/>
+      <div class="content">
+        <router-view/>
+      </div>
+    </div>
   </div>
 </template>
 
-<script>
+<script>/* eslint-disable */
+import Header from "./components/layout/Header"
+import Nav from "./components/layout/Nav"
 export default {
-  name: 'App'
+  name: 'App',
+  components: {Nav, Header}
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
