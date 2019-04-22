@@ -55,4 +55,9 @@ public class Post {
         this.updatedAt = updatedAt;
         this.updatedBy = updatedBy;
     }
+
+    public void update(PostDto.Update updateDto) {
+        this.title = updateDto.getTitle();
+        this.contents = updateDto.getContents();
+    }
 }

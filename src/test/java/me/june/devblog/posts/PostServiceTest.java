@@ -33,4 +33,22 @@ public class PostServiceTest {
         assertThat(post.getTitle()).isEqualTo(createDto.getTitle());
         assertThat(post.getContents()).isEqualTo(createDto.getContents());
     }
+
+    @Test
+    public void update() {
+        PostDto.Create createDto = PostDto.Create.builder()
+                .title("제목")
+                .contents("내용").build();
+        Post post = postService.createPost(createDto);
+
+        PostDto.Update updateDto = PostDto.Update.builder()
+                                                .seq(post.getId())
+                                                .title("제목 수정")
+                                                .contents("내용 수정").build();
+
+        postService.updatePost(updateDto);
+
+        Page<Post> all = postService.findAll(0);
+        all.getContent();
+    }
 }

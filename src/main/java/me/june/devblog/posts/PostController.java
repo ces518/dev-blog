@@ -25,7 +25,7 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    public ResponseEntity getPosts(int page) {
+    public ResponseEntity getPosts(@RequestParam(required = false, defaultValue = "0") int page) {
         Page<Post> pagedPosts = postService.findAll(page);
         return ResponseEntity.ok(pagedPosts);
     }
@@ -35,9 +35,32 @@ public class PostController {
                                      BindingResult result) {
         if(result.hasErrors()) {
             ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.BAD_REQUEST,"잘못된 요청입니다.");
-            ResponseEntity.badRequest().body(errorResponse);
+            return ResponseEntity.badRequest().body(errorResponse);
         }
         Post post = postService.createPost(createDto);
         return ResponseEntity.ok(post);
+    }
+
+    @PutMapping("{seq}")
+    public ResponseEntity updatePost(@Valid @RequestBody PostDto.Update updateDto,
+                                     BindingResult result) {
+        if(result.hasErrors()) {
+            ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.BAD_REQUEST,"잘못된 요청입니다.");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+        postService.updatePost(updateDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("{seq}")
+    public ResponseEntity deletePost(@PathVariable Long seq) {
+        postService.deletePost(seq);
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity postNotFoundException(PostNotFoundException e) {
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.BAD_REQUEST,e.getMessage());
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 }
