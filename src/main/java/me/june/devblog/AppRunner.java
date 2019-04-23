@@ -20,7 +20,7 @@ public class AppRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i++) {
             postRepository.save(Post.builder()
                     .title("제목" + i)
                     .contents("내용" + i).build());

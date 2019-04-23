@@ -3,7 +3,9 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-
+import axios from 'axios'
+//axios 사용을 위한 설정
+Vue.prototype.$axios = axios
 import '@/assets/css/main.css'
 import '@/assets/js/jquery-3.3.1.min.js'
 

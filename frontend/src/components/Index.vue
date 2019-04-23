@@ -55,7 +55,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="content in contents" v-bind:key="content">
+        <tr v-for="content in contents">
           <td>{{content.id}}</td>
           <td class="left">{{content.title}}</td>
           <td>작성자</td>
@@ -78,13 +78,9 @@
       <li class="dir prev">
         <a href="#" title="이전페이지로 이동">«</a>
       </li>
-      <li class="active">
-        <a href="#" title="1페이지, 현재페이지">1</a>
-      </li>
-      <li><a href="#" title="2페이지">2</a>
-      </li>
-      <li>
-        <a href="#" title="3페이지">3</a>
+      <li v-for="n in pages" v-bind:class="{active: $route.params.page == undefined && n == 1, pages: isPages}"  >
+        {{ checkCurrent(n) }}
+        <a href="#">{{n}}</a>
       </li>
       <li class="dir next">
         <a href="#" title="다음페이지로 이동">»</a>
@@ -110,21 +106,30 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
-      contents: []
+      contents: [],
+      pages: [],
+      current: 0,
+      isCurrent: false,
+      isPages: true
     }
   },
   // 라이프 사이클 훅에 해당하며 , 해당 인스턴스가 생성된 후 콜백
   created () {
-    let that = this;
-    $.ajax({
-      url: 'http://localhost:9000/posts',
-      dataType:'json',
-      method:'GET'
-    }).then(function(res) {
-      that.contents = res.content
-    }).catch(function(err) {
-      alert(err);
-    });
+    const page = this.$route.params.page || 0
+    this.current = page
+    const that = this;
+    that.$axios.get('http://localhost:9000/posts?page=' + page)
+      .then(function(res) {
+        console.dir(res);
+        that.contents = res.data.content
+        let start = res.data.number
+        let end = res.data.totalPages
+        console.log(start)
+        console.log(end)
+        for (var i = start + 1; i<= end; i++) {
+          that.pages.push(i)
+        }
+      })
   },
   methods: {
     regist() {
@@ -145,6 +150,13 @@ export default {
       day = day >= 10 ? day : '0' + day;                            //day 두자리로 저장
 
       return  year + '-' + month + '-' + day;
+    },
+    checkCurrent(index) {
+      if(this.current == index) {
+        this.isCurrent = true;
+      }else {
+        this.isCurrent = false;
+      }
     }
   }
 }
