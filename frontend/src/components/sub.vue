@@ -55,27 +55,16 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>2</td>
+        <tr v-for="data in content" v-bind:key="data">
+          <td>{{data.id}}</td>
           <td class="left">
-            아리랑TV 강릉여행 방송
+            {{data.title}}
           </td>
           <td>
-            관광진흥과
+            {{data.contents}}
           </td>
-          <td>2018-10-25</td>
-          <td>11</td>
-        </tr>
-        <tr>
-          <td>1</td>
-          <td class="left">
-            아리랑TV 강릉여행 방송
-          </td>
-          <td>
-            관광진흥과
-          </td>
-          <td>2018-10-25</td>
-          <td>11</td>
+          <td>{{data.createdAt}}</td>
+          <td>0</td>
         </tr>
         </tbody>
       </table>
@@ -88,19 +77,19 @@
       <li class="dir prev">
         <a href="#" title="이전페이지로 이동">«</a>
       </li>
-      <li class="active">
-        <a href="#" title="1페이지, 현재페이지">1</a>
+      <li>
+        <a href="#page" title="1페이지, 현재페이지" v-on:click="submit">1</a>
       </li>
-      <li><a href="#" title="2페이지">2</a>
+      <li class="active"><a href="#page" title="2페이지">2</a>
       </li>
       <li>
-        <a href="#" title="3페이지">3</a>
+        <a href="#page" title="3페이지">3</a>
       </li>
       <li class="dir next">
-        <a href="#" title="다음페이지로 이동">»</a>
+        <a href="#page" title="다음페이지로 이동">»</a>
       </li>
       <li class="dir last">
-        <a href="#" title="마지막페이지로 이동">»»</a>
+        <a href="#page" title="마지막페이지로 이동">»»</a>
       </li>
     </ul>
     <p class="board_butt">
@@ -114,12 +103,26 @@
 </template>
 
 <script>
-/* eslint-disable */
 export default {
   name: 'Index',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Welcome to Your Vue.js App',
+      content: []
+    }
+  },
+  methods:  {
+    submit () {
+      let that = this;
+      $.ajax({
+        url: 'http://localhost:9000/posts',
+        dataType:'json',
+        method:'GET'
+      }).then(function(res) {
+        that.content = res.content
+      }).catch(function(err) {
+         alert(err);
+      });
     }
   }
 }

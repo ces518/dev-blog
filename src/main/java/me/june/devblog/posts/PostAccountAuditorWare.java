@@ -15,7 +15,6 @@ import java.util.Optional;
  * Date: 2019-04-14
  * Time: 17:56
  **/
-@Service
 public class PostAccountAuditorWare implements AuditorAware<Account> {
 
     @Override

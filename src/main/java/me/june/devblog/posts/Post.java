@@ -35,26 +35,34 @@ public class Post {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @CreatedBy
-    @ManyToOne
-    private Account createdBy;
+//    @CreatedBy
+//    @ManyToOne
+//    private Account createdBy;
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @LastModifiedBy
-    @ManyToOne
-    private Account updatedBy;
+//    @LastModifiedBy
+//    @ManyToOne
+//    private Account updatedBy;
 
     @Builder
-    public Post(String title, String contents, LocalDateTime createdAt, Account createdBy, LocalDateTime updatedAt, Account updatedBy) {
+    public Post(String title, String contents, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.title = title;
         this.contents = contents;
         this.createdAt = createdAt;
-        this.createdBy = createdBy;
         this.updatedAt = updatedAt;
-        this.updatedBy = updatedBy;
     }
+
+
+//    public Post(String title, String contents, LocalDateTime createdAt, Account createdBy, LocalDateTime updatedAt, Account updatedBy) {
+//        this.title = title;
+//        this.contents = contents;
+//        this.createdAt = createdAt;
+//        this.createdBy = createdBy;
+//        this.updatedAt = updatedAt;
+//        this.updatedBy = updatedBy;
+//    }
 
     public void update(PostDto.Update updateDto) {
         this.title = updateDto.getTitle();

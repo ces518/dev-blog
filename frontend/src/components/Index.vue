@@ -55,27 +55,17 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>2</td>
-          <td class="left">
-            아리랑TV 강릉여행 방송
-          </td>
-          <td>
-            관광진흥과
-          </td>
-          <td>2018-10-25</td>
-          <td>11</td>
+        <tr v-for="content in contents" v-bind:key="content">
+          <td>{{content.id}}</td>
+          <td class="left">{{content.title}}</td>
+          <td>작성자</td>
+          <td>{{formattedDate(content.createdAt)}}</td>
+          <td>0</td>
         </tr>
-        <tr>
-          <td>1</td>
-          <td class="left">
-            아리랑TV 강릉여행 방송
+        <tr v-if="contents.length == 0">
+          <td colspan="5" style="text-align: center;">
+            데이터가 존재하지 않습니다.
           </td>
-          <td>
-            관광진흥과
-          </td>
-          <td>2018-10-25</td>
-          <td>11</td>
         </tr>
         </tbody>
       </table>
@@ -106,7 +96,7 @@
     <p class="board_butt">
 		  <span class="button">
         <span class="typeA">
-          <button type="button">등록</button>
+          <button type="button" v-on:click="regist();">등록</button>
         </span>
       </span>
     </p>
@@ -119,10 +109,46 @@ export default {
   name: 'Index',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Welcome to Your Vue.js App',
+      contents: []
+    }
+  },
+  // 라이프 사이클 훅에 해당하며 , 해당 인스턴스가 생성된 후 콜백
+  created () {
+    let that = this;
+    $.ajax({
+      url: 'http://localhost:9000/posts',
+      dataType:'json',
+      method:'GET'
+    }).then(function(res) {
+      that.contents = res.content
+    }).catch(function(err) {
+      alert(err);
+    });
+  },
+  methods: {
+    regist() {
+      // $router 와 전역 router는 완전히 동일한 객체이다.
+      // $router.push 로 클릭시 라우터간에 이동처리가 가능하다.
+      this.$router.push('/regist')
+    },
+    formattedDate(dateString) {
+      var date = new Date(dateString);
+      var year = date.getFullYear();                                 //yyyy
+
+      var month = (1 + date.getMonth());                     //M
+
+      month = month >= 10 ? month : '0' + month;     // month 두자리로 저장
+
+      var day = date.getDate();                                        //d
+
+      day = day >= 10 ? day : '0' + day;                            //day 두자리로 저장
+
+      return  year + '-' + month + '-' + day;
     }
   }
 }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
