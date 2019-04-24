@@ -21,7 +21,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     public Page<Post> findAll(int page) {
-        PageRequest pageRequest = PageRequest.of(0,10, Sort.Direction.DESC, "id");
+        PageRequest pageRequest = PageRequest.of(page,10, Sort.Direction.DESC, "id");
         return postRepository.findAll(pageRequest);
     }
 

@@ -78,9 +78,8 @@
       <li class="dir prev">
         <a href="#" title="이전페이지로 이동">«</a>
       </li>
-      <li v-for="n in pages" v-bind:class="{active: $route.params.page == undefined && n == 1, pages: isPages}"  >
-        {{ checkCurrent(n) }}
-        <a href="#">{{n}}</a>
+      <li v-for="n in pages" class="pages" ref="pages">
+        <a href="#page" v-on:click="next(n-1)">{{n}}</a>
       </li>
       <li class="dir next">
         <a href="#" title="다음페이지로 이동">»</a>
@@ -100,6 +99,7 @@
 </template>
 
 <script>
+
 /* eslint-disable */
 export default {
   name: 'Index',
@@ -108,9 +108,8 @@ export default {
       msg: 'Welcome to Your Vue.js App',
       contents: [],
       pages: [],
-      current: 0,
-      isCurrent: false,
-      isPages: true
+      currentPage: 0,
+      totalPage: 1
     }
   },
   // 라이프 사이클 훅에 해당하며 , 해당 인스턴스가 생성된 후 콜백
@@ -122,14 +121,32 @@ export default {
       .then(function(res) {
         console.dir(res);
         that.contents = res.data.content
-        let start = res.data.number
-        let end = res.data.totalPages
-        console.log(start)
-        console.log(end)
-        for (var i = start + 1; i<= end; i++) {
-          that.pages.push(i)
+        that.currentPage = res.data.number
+        that.totalPage = res.data.totalPages
+
+        let arr = []
+        for (let i = 0; i < that.totalPage; i++) {
+          arr.push(i + 1);
         }
+        that.pages = arr
       })
+  },
+  mounted () {
+    // dom이 랜더링된후 콜백
+  },
+  updated() {
+    // data가 변경되어 재 랜더링되었을경우 콜백
+
+    // 현재페이지에 active class add
+    let pages = this.$el.querySelectorAll('.pages')
+    pages.forEach((el,index) => {
+        if(index == this.currentPage) {
+          el.classList.add('active')
+        } else {
+          el.classList.remove('active')
+        }
+
+    })
   },
   methods: {
     regist() {
@@ -151,12 +168,24 @@ export default {
 
       return  year + '-' + month + '-' + day;
     },
-    checkCurrent(index) {
-      if(this.current == index) {
-        this.isCurrent = true;
-      }else {
-        this.isCurrent = false;
-      }
+    next(index) {
+      console.log(index)
+      const page = index
+      this.current = page
+      const that = this;
+      that.$axios.get('http://localhost:9000/posts?page=' + page)
+        .then(function(res) {
+          console.dir(res);
+          that.contents = res.data.content
+          that.currentPage = res.data.number
+          that.totalPage = res.data.totalPages
+
+          let arr = []
+          for (let i = 0; i < that.totalPage; i++) {
+            arr.push(i + 1);
+          }
+          that.pages = arr
+        })
     }
   }
 }
